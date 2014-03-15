@@ -1,4 +1,4 @@
-# stub.sh
+# stub.sh [![Build Status](https://travis-ci.org/jimeh/stub.sh.png)](https://travis-ci.org/jimeh/stub.sh)
 
 A set of stubbing helpers for use in bash script tests. Supports stubbing and
 restoring both binaries and bash functions.
