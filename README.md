@@ -33,11 +33,11 @@ Stubbing bash functions:
 ```bash
 source "stub.sh"
 my-name-is() { echo "My name is $@."; }
-my-name-is Edward #=> Edward
+my-name-is Edward Elric #=> My name is Edward Elric.
 stub my-name-is
-my-name-is Edward #=> my-name-is stub: Edward
+my-name-is Edward Elric #=> my-name-is stub: Edward Elric
 restore my-name-is
-my-name-is Edward #=> Edward
+my-name-is Edward Elric #=> My name is Edward Elric.
 ```
 
 
