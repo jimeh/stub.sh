@@ -69,10 +69,12 @@ stub_and_eval() {
 
   # If stubbing a function, store non-stubbed copy of it required for restore.
   if [ -n "$(command -v "$cmd")" ]; then
-    if [[ "$(type "$cmd" | head -1)" == *"is a function" ]]; then
-      local source="$(type "$cmd" | tail -n +2)"
-      source="${source/$cmd/non_stubbed_${cmd}}"
-      eval "$source"
+    if [ -z "$(command -v "non_stubbed_${cmd}")" ]; then
+      if [[ "$(type "$cmd" | head -1)" == *"is a function" ]]; then
+        local source="$(type "$cmd" | tail -n +2)"
+        source="${source/$cmd/non_stubbed_${cmd}}"
+        eval "$source"
+      fi
     fi
   fi
 

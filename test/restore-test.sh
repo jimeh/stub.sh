@@ -43,5 +43,17 @@ restore "my-name-is"
 assert "my-name-is Edward Elric" "My name is Edward Elric."
 
 
+# Stubbing the same function multiple times and then restoring it.
+my-name-is() { echo "My name is $@."; }
+stub "my-name-is"
+assert "my-name-is Edward Elric" ""
+stub "my-name-is" stdout
+assert "my-name-is Edward Elric" "my-name-is stub: Edward Elric"
+
+restore "my-name-is"
+assert "my-name-is Edward Elric" "My name is Edward Elric."
+
+
+
 # End of tests.
 assert_end "restore()"
