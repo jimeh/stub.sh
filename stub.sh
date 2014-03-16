@@ -29,10 +29,15 @@
 # Arguments:
 #   - $1: Name of command to stub.
 #   - $2: When set to "STDERR", echo to STDERR instead of STDOUT.
+#         When set to "null", all output is redirected to /dev/null.
 #
 #
 stub() {
-  stub_and_echo "$1" "$1 stub: \$@" "$2"
+  local redirect="null"
+  if [ "$2" == "stdout" ] || [ "$2" == "STDOUT" ]; then redirect=""; fi
+  if [ "$2" == "stderr" ] || [ "$2" == "STDERR" ]; then redirect="stderr"; fi
+
+  stub_and_echo "$1" "$1 stub: \$@" "$redirect"
 }
 
 
@@ -42,9 +47,13 @@ stub() {
 #   - $1: Name of command to stub.
 #   - $2: String to echo when stub is called.
 #   - $3: When set to "STDERR", echo to STDERR instead of STDOUT.
+#         When set to "null", all output is redirected to /dev/null.
 #
 stub_and_echo() {
-  if [ "$3" == "STDERR" ]; then local redirect=" 1>&2"; fi
+  local redirect=""
+  if [ "$3" == "stderr" ] || [ "$3" == "STDERR" ]; then redirect=" 1>&2"; fi
+  if [ "$3" == "null" ]; then redirect=" &>/dev/null"; fi
+
   stub_and_eval "$1" "echo \"$2\"$redirect"
 }
 

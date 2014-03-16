@@ -10,16 +10,16 @@ source "test-helper.sh"
 my-name-is() { echo "My name is $@."; }
 assert "my-name-is Edward Elric" "My name is Edward Elric."
 
-stub "my-name-is"
+stub "my-name-is" stdout
 assert "my-name-is Edward Elric" "my-name-is stub: Edward Elric"
 
-restore "my-name-is"
+restore "my-name-is" stdout
 assert "my-name-is Edward Elric" "My name is Edward Elric."
 
 
 # Stubbing and restoring a executable file.
 actual_uname="$(uname)"
-stub "uname"
+stub "uname" stdout
 assert "uname" "uname stub: "
 assert "uname -a" "uname stub: -a"
 
