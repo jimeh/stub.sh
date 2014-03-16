@@ -29,11 +29,13 @@ my-name-is() { echo "My name is $@."; }
 stub "my-name-is" STDERR
 assert "my-name-is Edward" ""
 assert "my-name-is Edward 2>&1" "my-name-is stub: Edward"
+unset -f my-name-is
 
 
 # Stubbing something that doesn't exist.
 stub "cowabunga-dude"
 assert "cowabunga-dude yeah dude" "cowabunga-dude stub: yeah dude"
+unset -f cowabunga-dude
 
 
 # End of tests.

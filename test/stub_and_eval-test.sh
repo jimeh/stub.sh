@@ -28,6 +28,7 @@ unset -f uname
 stub_and_eval "cowabunga-dude" "date +%Y"
 assert "cowabunga-dude" "$(date +%Y)"
 assert "cowabunga-dude yeah dude" "$(date +%Y)"
+unset -f cowabunga-dude
 
 
 # End of tests.
