@@ -1,3 +1,6 @@
+test: prepare
+	./test.sh
+
 prepare:
 	test -f "test/assert.sh" || ( \
 		echo "fetching assert.sh..." && \
@@ -5,8 +8,5 @@ prepare:
 			https://raw.github.com/lehmannro/assert.sh/master/assert.sh \
 	)
 
-test: prepare
-	./test.sh
-
 .SILENT:
-.PHONY: test
+.PHONY: test prepare
