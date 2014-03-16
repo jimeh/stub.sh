@@ -3,6 +3,9 @@
 A set of stubbing helpers for use in bash script tests. Supports stubbing and
 restoring both binaries and bash functions.
 
+Particularly useful when used in combination with the simple and elegant
+[assert.sh](https://github.com/lehmannro/assert.sh) test framework.
+
 
 ## Usage
 
