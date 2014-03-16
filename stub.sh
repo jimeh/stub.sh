@@ -49,7 +49,7 @@ stub_and_echo() {
 }
 
 
-# Stub given command, and executes given string with eval.
+# Stub given command, and execute given string with eval.
 #
 # Arguments:
 #   - $1: Name of command to stub.
