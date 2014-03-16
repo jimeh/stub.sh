@@ -1,2 +1,2 @@
 language: node_js
-script: make test
+script: INVARIANT=1 make test
