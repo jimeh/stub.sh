@@ -9,7 +9,7 @@ Particularly useful when used in combination with the simple and elegant
 
 ## Usage
 
-Put `stub.sh` in your project, source it into your tests. For detailed
+Put `stub.sh` in your project, and source it into your tests. For detailed
 examples, why not have a look at the [tests][] for stub.sh itself?
 
 [tests]: https://github.com/jimeh/stub.sh/tree/master/test
