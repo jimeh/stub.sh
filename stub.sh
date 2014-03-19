@@ -24,14 +24,15 @@
 #
 
 
-# Stub given command, echoing a default stub message.
+# Public: Stub given command, echoing a default stub message.
 #
 # Arguments:
 #   - $1: Name of command to stub.
 #   - $2: When set to "STDERR", echo to STDERR instead of STDOUT.
 #         When set to "null", all output is redirected to /dev/null.
 #
-#
+# Echoes nothing.
+# Returns nothing.
 stub() {
   local redirect="null"
   if [ "$2" == "stdout" ] || [ "$2" == "STDOUT" ]; then redirect=""; fi
@@ -41,7 +42,7 @@ stub() {
 }
 
 
-# Stub given command, and echo given string.
+# Public: Stub given command, and echo given string.
 #
 # Arguments:
 #   - $1: Name of command to stub.
@@ -49,6 +50,8 @@ stub() {
 #   - $3: When set to "STDERR", echo to STDERR instead of STDOUT.
 #         When set to "null", all output is redirected to /dev/null.
 #
+# Echoes nothing.
+# Returns nothing.
 stub_and_echo() {
   local redirect=""
   if [ "$3" == "stderr" ] || [ "$3" == "STDERR" ]; then redirect=" 1>&2"; fi
@@ -58,12 +61,14 @@ stub_and_echo() {
 }
 
 
-# Stub given command, and execute given string with eval.
+# Public: Stub given command, and execute given string with eval.
 #
 # Arguments:
 #   - $1: Name of command to stub.
 #   - $2: String to eval when stub is called.
 #
+# Echoes nothing.
+# Returns nothing.
 stub_and_eval() {
   local cmd="$1"
 
@@ -87,11 +92,13 @@ stub_and_eval() {
 }
 
 
-# Restore the original command/function that was stubbed.
+# Public: Restore the original command/function that was stubbed.
 #
 # Arguments:
 #   - $1: Name of command to restore.
 #
+# Echoes nothing.
+# Returns nothing.
 restore() {
   local cmd="$1"
 
