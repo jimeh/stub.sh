@@ -114,6 +114,42 @@ stub_called() {
 }
 
 
+# Public: Find out how many times a stub has been called.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $2: When specified, will check if stub was called exactly the given
+#         number of times (optional).
+#
+# Examples:
+#   stub_called_times "uname"   # Echoes "2" if stub has been called twice.
+#   stub_called_times "uname" 2 # Returns value of 0 (success).
+#   stub_called_times "uname" 3 # Returns value of 1 (error).
+#
+# Echoes number of times stub has been called if $2 is not given, otherwise
+# echoes nothing.
+# Returns 0 (success) if $2 is not given, or if it is given and it matches the
+# number of times the stub has been called. Otherwise 1 (error) is returned if
+# it doesn't match..
+stub_called_times() {
+  local count=0
+
+  for called in ${STUB_CALLED_STUBS[@]}; do
+    if [ "$called" == "$1" ]; then
+      ((count++))
+    fi
+  done
+
+  if [ -n "$2" ]; then
+    if [ "$2" != "$count" ]; then
+      return 1
+    fi
+  else
+    echo $count
+  fi
+}
+
+
 # Public: Restore the original command/function that was stubbed.
 #
 # Arguments:
