@@ -209,7 +209,8 @@ restore() {
 
   # If stub was for a function, restore the original function.
   if type "non_stubbed_${cmd}" &>/dev/null; then
-    if [[ "$(type "non_stubbed_${cmd}" | head -1)" == *"is a function" ]]; then
+    local original_type="$(type "non_stubbed_${cmd}" | head -1)"
+    if [[ "$original_type" == *"is a function" ]]; then
       local source="$(type "non_stubbed_$cmd" | tail -n +2)"
       source="${source/non_stubbed_${cmd}/$cmd}"
       eval "$source"
