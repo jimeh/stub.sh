@@ -95,6 +95,10 @@ stub_and_eval() {
     STUB_ACTIVE_STUBS+=("$cmd")
   fi
 
+  # Remove stub from list of called stubs, as we are now creating a new stub
+  # which hasn't been called yet.
+  STUB_CALLED_STUBS=(${STUB_CALLED_STUBS[@]/$cmd/})
+
   # Create the stub.
   eval "$(echo -e "${cmd}() {\n  __stub_call \"${cmd}\"\n  $2\n}")"
 }
@@ -203,9 +207,6 @@ restore() {
 
   # Remove stub from list of active stubs.
   STUB_ACTIVE_STUBS=(${STUB_ACTIVE_STUBS[@]/$cmd/})
-
-  # Remove stub from list of called stubs.
-  STUB_CALLED_STUBS=(${STUB_CALLED_STUBS[@]/$cmd/})
 
   # If stub was for a function, restore the original function.
   if type "non_stubbed_${cmd}" &>/dev/null; then

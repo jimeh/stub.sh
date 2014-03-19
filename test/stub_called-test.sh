@@ -19,20 +19,24 @@ uname
 assert_raises 'stub_called "uname"' 0
 restore "uname"
 
-# Returns 1 after called stub has been restored.
+# Stub called state is reset by creating a new stub, not by restore.
 stub "uname"
 uname
 restore "uname"
+assert_raises 'stub_called "uname"' 0
+stub "uname"
 assert_raises 'stub_called "uname"' 1
+restore "uname"
 
-# Restoring only resets called state of restored stub.
+# Recreating a stub only resets called state of recreated stub.
 stub "uname"
 stub "top"
 uname
 top
-restore "uname"
+stub "uname"
 assert_raises 'stub_called "uname"' 1
 assert_raises 'stub_called "top"' 0
+restore "uname"
 restore "top"
 
 

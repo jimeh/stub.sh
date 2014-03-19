@@ -19,12 +19,15 @@ uname
 assert 'stub_called_times "uname"' "3"
 restore "uname"
 
-# Echoes 0 after a called stub has been restored.
+# Echoes 0 after a called stub has been recreated.
 stub "uname"
 uname
 assert 'stub_called_times "uname"' "1"
 restore "uname"
+assert 'stub_called_times "uname"' "1"
+stub "uname"
 assert 'stub_called_times "uname"' "0"
+restore "uname"
 
 # When given a second argument, asserts stub called X number of times.
 stub "uname"
