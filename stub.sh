@@ -72,6 +72,9 @@ stub_and_echo() {
 stub_and_eval() {
   local cmd="$1"
 
+  # Setup empty list of called stubs.
+  if [ -z "$STUB_CALLED_STUBS" ]; then STUB_CALLED_STUBS=(); fi
+
   # Setup empty list of active stubs.
   if [ -z "$STUB_ACTIVE_STUBS" ]; then STUB_ACTIVE_STUBS=(); fi
 
@@ -93,7 +96,21 @@ stub_and_eval() {
   fi
 
   # Create the stub.
-  eval "$(echo -e "${cmd}() {\n  $2\n}")"
+  eval "$(echo -e "${cmd}() {\n  __stub_call \"${cmd}\"\n  $2\n}")"
+}
+
+
+# Public: Find out if stub has been called. Returns 0 if yes, 1 if no.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#
+# Echoes nothing.
+# Returns 0 (success) is stub has been called, 1 (error) otherwise.
+stub_called() {
+  if [[ " ${STUB_CALLED_STUBS[@]} " != *" $1 "* ]]; then
+    return 1
+  fi
 }
 
 
@@ -118,6 +135,9 @@ restore() {
   # Remove stub from list of active stubs.
   STUB_ACTIVE_STUBS=(${STUB_ACTIVE_STUBS[@]/$cmd/})
 
+  # Remove stub from list of called stubs.
+  STUB_CALLED_STUBS=(${STUB_CALLED_STUBS[@]/$cmd/})
+
   # If stub was for a function, restore the original function.
   if type "non_stubbed_${cmd}" &>/dev/null; then
     if [[ "$(type "non_stubbed_${cmd}" | head -1)" == *"is a function" ]]; then
@@ -127,4 +147,15 @@ restore() {
       unset -f "non_stubbed_${cmd}"
     fi
   fi
+}
+
+
+#
+# Internal functions
+#
+
+# Private: Used to keep track of which stubs have been called and how many
+# times.
+__stub_call() {
+  STUB_CALLED_STUBS+=("$1")
 }
