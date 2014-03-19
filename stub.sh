@@ -166,6 +166,23 @@ stub_called_at_least_times() {
 }
 
 
+# Public: Find out of stub has been called no more than the given number of
+# times.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $2: Minimum required number of times stub has been called.
+#
+# Echoes nothing.
+# Returns 0 (success) if stub has been called no more than the given number of
+# times, otherwise 1 (error) is returned.
+stub_called_at_most_times() {
+  if [ "$(stub_called_times "$1")" -gt "$2" ]; then
+    return 1
+  fi
+}
+
+
 # Public: Restore the original command/function that was stubbed.
 #
 # Arguments:
