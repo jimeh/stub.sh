@@ -72,6 +72,9 @@ stub_and_echo() {
 stub_and_eval() {
   local cmd="$1"
 
+  # Setup empty list of active stubs.
+  if [ -z "$STUB_ACTIVE_STUBS" ]; then STUB_ACTIVE_STUBS=(); fi
+
   # If stubbing a function, store non-stubbed copy of it required for restore.
   if [ -n "$(command -v "$cmd")" ]; then
     if [ -z "$(command -v "non_stubbed_${cmd}")" ]; then
@@ -83,9 +86,11 @@ stub_and_eval() {
     fi
   fi
 
-  # Use a function to keep track of if the command is stubbed, as variable
-  # names doesn't support the "-" character, while function names do.
-  eval "$(echo -e "${cmd}_is_stubbed() {\n  return 0\n}")"
+  # Keep track of what is currently stubbed to ensure restore only acts on
+  # actual stubs.
+  if [[ " ${STUB_ACTIVE_STUBS[@]} " != *" $1 "* ]]; then
+    STUB_ACTIVE_STUBS+=("$cmd")
+  fi
 
   # Create the stub.
   eval "$(echo -e "${cmd}() {\n  $2\n}")"
@@ -103,13 +108,15 @@ restore() {
   local cmd="$1"
 
   # Don't do anything if the command isn't currently stubbed.
-  if [[ "$(type "${cmd}_is_stubbed" 2>&1)" == *"not found"* ]]; then
-    return 0;
+  if [[ " ${STUB_ACTIVE_STUBS[@]} " != *" $1 "* ]]; then
+    return 0
   fi
 
   # Remove stub functions.
-  unset -f "${cmd}_is_stubbed"
   unset -f "$cmd"
+
+  # Remove stub from list of active stubs.
+  STUB_ACTIVE_STUBS=(${STUB_ACTIVE_STUBS[@]/$cmd/})
 
   # If stub was for a function, restore the original function.
   if type "non_stubbed_${cmd}" &>/dev/null; then
