@@ -20,12 +20,14 @@ Stubbing binaries:
 
 ```bash
 source "stub.sh"
-uname #=> Darwin
-stub uname
-uname #=> uname stub:
-uname -r #=> uname stub: -r
-restore uname
-uname #=> Darwin
+uname             #=> Darwin
+stub uname        # silent stub
+uname             #=>
+stub uname STDOUT # stub prints to STDOUT
+uname             #=> uname stub: 
+uname -r          #=> uname stub: -r
+restore uname     # remove stub
+uname             #=> Darwin
 ```
 
 Stubbing bash functions:
@@ -34,9 +36,11 @@ Stubbing bash functions:
 source "stub.sh"
 my-name-is() { echo "My name is $@."; }
 my-name-is Edward Elric #=> My name is Edward Elric.
-stub my-name-is
+stub my-name-is         # silent stub
+my-name-is Edward Elric #=> 
+stub my-name-is STDOUT  # stub prints to STDOUT
 my-name-is Edward Elric #=> my-name-is stub: Edward Elric
-restore my-name-is
+restore my-name-is      # remove stub
 my-name-is Edward Elric #=> My name is Edward Elric.
 ```
 
