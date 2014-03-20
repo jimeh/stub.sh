@@ -40,18 +40,47 @@ restore my-name-is
 my-name-is Edward Elric #=> My name is Edward Elric.
 ```
 
+Asserting stub has been called:
+
+```bash
+source "stub.sh"
+my-uname() { uname; }
+stub_and_echo uname "FooBar"
+stub_called uname # return value of 1 (error)
+my-uname            #=> FooBar
+stub_called uname # return value of 0 (success)
+restore uname
+```
+
+Asserting stub has been called X times:
+
+```bash
+source "stub.sh"
+my-uname() { uname; }
+stub_and_echo uname "FooBar"
+stub_called_times uname   #=> 0
+stub_called_times uname 2 # return value of 1 (error)
+my-uname                  #=> FooBar
+stub_called_times uname   #=> 1
+stub_called_times uname 2 # return value of 1 (error)
+my-uname                  #=> FooBar
+stub_called_times uname   #=> 2
+stub_called_times uname 2 # return value of 0 (success)
+restore uname
+```
+
 
 ## Function Reference
 
 - `stub`: Basic stubbing command. Will echo a default message to STDOUT.
   Arguments:
     - `$1`: Name of command to stub
-    - `$2`: When set to "STDERR", echo to STDERR instead of STDOUT.
+    - `$2`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
 - `stub_and_echo`: Stub given command and echo a custom string to STDOUT.
   Arguments:
     - `$1`: Name of command to stub.
     - `$2`: String to echo when stub is called.
-    - `$3`: When set to "STDERR", echo to STDERR instead of STDOUT.
+    - `$3`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
 - `stub_and_eval`: Stub given command and execute custom commands via eval.
   Arguments:
     - `$1`: Name of command to stub.
@@ -59,6 +88,29 @@ my-name-is Edward Elric #=> My name is Edward Elric.
 - `restore`: Restores use of original binary/function that was stubbed.
   Arguments:
     - `$1`: Name of command to restore.
+- `stub_called`: Check if given stub has been called. Gives a `0` return value
+  when true, and `1` when false.
+    - `$1`: Name of stub to check.
+- `stub_called_times`: Find out how many times a stub has been called, or
+  given a second argument it validates if stub was called exactly X times.
+    - `$1`: Name of stub to check.
+    - `$2`: Exact number of times stub should have been called (optional).
+- `stub_called_at_least_times`: Validate that stub has been called at least X
+  number of times.
+    - `$1`: Name of stub to check.
+    - `$2`: Minimum number of times stub should have been called.
+- `stub_called_at_most_times`: Validate that stub has been called no more than
+  X number of times.
+    - `$1`: Name of stub to check.
+    - `$2`: Maximum number of times stub should have been called.
+
+
+## Todo
+
+- Add a `stub_called_with` function that validates the stub has been called
+  with specific arguments.
+- Add a `stub_called_with_times` function that validates the stub has been
+  called with specific arguments a specific number of times.
 
 
 ## License
