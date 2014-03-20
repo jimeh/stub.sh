@@ -47,7 +47,7 @@ source "stub.sh"
 my-uname() { uname; }
 stub_and_echo uname "FooBar"
 stub_called uname # return value of 1 (error)
-my-uname            #=> FooBar
+my-uname          #=> FooBar
 stub_called uname # return value of 0 (success)
 restore uname
 ```
