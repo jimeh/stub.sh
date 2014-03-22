@@ -63,14 +63,14 @@ Asserting stub has been called X times:
 source "stub.sh"
 my-uname() { uname; }
 stub_and_echo uname "FooBar"
-stub_called_times uname   #=> 0
-stub_called_times uname 2 # returns 1 (error)
-my-uname                  #=> FooBar
-stub_called_times uname   #=> 1
-stub_called_times uname 2 # returns 1 (error)
-my-uname                  #=> FooBar
-stub_called_times uname   #=> 2
-stub_called_times uname 2 # returns 0 (success)
+stub_called_times uname           #=> 0
+stub_called_exactly_times uname 2 # returns 1 (error)
+my-uname                          #=> FooBar
+stub_called_times uname           #=> 1
+stub_called_exactly_times uname 2 # returns 1 (error)
+my-uname                          #=> FooBar
+stub_called_times uname           #=> 2
+stub_called_exactly_times uname 2 # returns 0 (success)
 restore uname
 ```
 
