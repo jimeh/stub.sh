@@ -74,7 +74,7 @@ stub_called_exactly_times uname 2 # returns 0 (success)
 restore uname
 ```
 
-Asserting stub has been called with specific attributes:
+Asserting stub has been called with specific arguments:
 
 ```bash
 source "stub.sh"
@@ -91,7 +91,7 @@ stub_called_with uname -r    # returns 0 (success)
 restore uname
 ```
 
-Asserting stub has been called X number of times with specific attributes:
+Asserting stub has been called X number of times with specific arguments:
 
 ```bash
 source "stub.sh"
