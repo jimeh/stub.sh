@@ -1,5 +1,5 @@
 # !/usr/bin/env bash
-# stub.sh 0.3.0 - stubbing helpers for simplifying bash script tests.
+# stub.sh 1.0.0 - stubbing helpers for simplifying bash script tests.
 # https://github.com/jimeh/stub.sh
 #
 # (The MIT License)
