@@ -114,10 +114,12 @@ restore uname
 
 ### Stubbing and Restoring
 
-- **`stub`**: Basic stubbing command. Will echo a default message to STDOUT.
+- **`stub`**: Basic stubbing command.
   Arguments:
     - `$1`: Name of command to stub
-    - `$2`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
+    - `$2`: When set to "STDERR" or "STDOUT", will echo a default message to
+      specified output. If no output is specified, nothing is echoed
+      (optional).
 - **`stub_and_echo`**: Stub given command and echo a custom string to STDOUT.
   Arguments:
     - `$1`: Name of command to stub.
