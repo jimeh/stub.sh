@@ -116,14 +116,15 @@ restore uname
 
 - **`stub`**: Basic stubbing command.
     - `$1`: Name of command to stub
-    - `$2`: When set to "STDERR" or "STDOUT", will echo a default message to
-      specified output. If no output is specified, nothing is echoed
-      (optional).
+    - `$2`: (optional) When set to "STDERR" or "STDOUT", will echo a default
+      message to specified output. If no output is specified, nothing is
+      echoed.
 - **`stub_and_echo`**: Stub given command and echo a custom string to STDOUT.
     - `$1`: Name of command to stub.
     - `$2`: String to echo when stub is called.
-    - `$3`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
-- **`stub_and_eval`**: Stub given command and execute custom commands via eval.
+    - `$3`: (optional) When set to "STDERR", echo to STDERR instead of STDOUT.
+- **`stub_and_eval`**: Stub given command and execute custom commands via
+  eval.
     - `$1`: Name of command to stub.
     - `$2`: String to eval when stub is called.
 - **`restore`**: Restores use of original binary/function that was stubbed.
@@ -154,31 +155,31 @@ restore uname
 - **`stub_called_with`**: Check if given stub has been called with specified
   arguments.
     - `$1`: Name of stub to check.
-    - `$@`: All additional arguments are used to specify what stub was called
-      with.
+    - `$@`: Any/all additional arguments are used to specify what stub was
+      called with.
 - **`stub_called_with_times`**: Find out how many times a stub has been
   called with specified arguments.
     - `$1`: Name of stub to check.
-    - `$@`: All additional arguments are used to specify what stub was called
-      with.
+    - `$@`: Any/all additional arguments are used to specify what stub was
+      called with.
 - **`stub_called_with_exactly_times`**: Validate that stub has been called
   with specified arguments exactly given number of times.
     - `$1`: Name of stub to check.
     - `$2`: Exact number of times stub should have been called.
-    - `$@`: All additional arguments are used to specify what stub was called
-      with.
+    - `$@`: Any/all additional arguments are used to specify what stub was
+      called with.
 - **`stub_called_with_at_least_times`**: Validate that stub has been called
   with specified arguments at least X number of times.
     - `$1`: Name of stub to check.
     - `$2`: Minimum number of times stub should have been called.
-    - `$@`: All additional arguments are used to specify what stub was called
-      with.
+    - `$@`: Any/all additional arguments are used to specify what stub was
+      called with.
 - **`stub_called_with_at_most_times`**: Validate that stub has been called
   with specified arguments no more than X number of times.
     - `$1`: Name of stub to check.
     - `$2`: Maximum number of times stub should have been called.
-    - `$@`: All additional arguments are used to specify what stub was called
-      with.
+    - `$@`: Any/all additional arguments are used to specify what stub was
+      called with.
 
 
 ## Todo
