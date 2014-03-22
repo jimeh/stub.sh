@@ -72,9 +72,6 @@ stub_and_echo() {
 stub_and_eval() {
   local cmd="$1"
 
-  # Setup empty list of called stubs.
-  if [ -z "$STUB_CALLED_STUBS" ]; then STUB_CALLED_STUBS=(); fi
-
   # Setup empty list of active stubs.
   if [ -z "$STUB_ACTIVE_STUBS" ]; then STUB_ACTIVE_STUBS=(); fi
 
@@ -89,18 +86,17 @@ stub_and_eval() {
     fi
   fi
 
+  # Prepare stub index and call list for this stub.
+  __stub_register "$cmd"
+
   # Keep track of what is currently stubbed to ensure restore only acts on
   # actual stubs.
-  if [[ " ${STUB_ACTIVE_STUBS[@]} " != *" $1 "* ]]; then
+  if [[ " ${STUB_ACTIVE_STUBS[@]} " != *" $cmd "* ]]; then
     STUB_ACTIVE_STUBS+=("$cmd")
   fi
 
-  # Remove stub from list of called stubs, as we are now creating a new stub
-  # which hasn't been called yet.
-  STUB_CALLED_STUBS=(${STUB_CALLED_STUBS[@]/$cmd/})
-
   # Create the stub.
-  eval "$(echo -e "${cmd}() {\n  __stub_call \"${cmd}\"\n  $2\n}")"
+  eval "$(echo -e "${cmd}() {\n  __stub_call \"${cmd}\" \$@\n  $2\n}")"
 }
 
 
@@ -112,7 +108,35 @@ stub_and_eval() {
 # Echoes nothing.
 # Returns 0 (success) is stub has been called, 1 (error) otherwise.
 stub_called() {
-  if [[ " ${STUB_CALLED_STUBS[@]} " != *" $1 "* ]]; then
+  if [ "$(stub_called_times "$1")" -lt 1 ]; then
+    return 1
+  fi
+}
+
+
+# Public: Find out if stub has been called with specific arguments.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $@: All additional arguments are used to specify what stub was called
+#         with.
+#
+# Examples:
+#   stub "uname"
+#   uname
+#   uname -r -a
+#   stub_called_with uname       # Returns 0 (success).
+#   stub_called_with uname -r    # Returns 1 (error).
+#   stub_called_with uname -r -a # Returns 0 (success).
+#
+# Echoes nothing.
+# Returns 0 (success) if specified stub has been called with given arguments,
+# otherwise returns 1 (error).
+stub_called_with() {
+  local cmd="$1"
+  shift 1
+
+  if [ "$(stub_called_with_times "$cmd" $@)" -lt 1 ]; then
     return 1
   fi
 }
@@ -127,8 +151,8 @@ stub_called() {
 #
 # Examples:
 #   stub_called_times "uname"   # Echoes "2" if stub has been called twice.
-#   stub_called_times "uname" 2 # Returns value of 0 (success).
-#   stub_called_times "uname" 3 # Returns value of 1 (error).
+#   stub_called_times "uname" 2 # Returns 0 (success).
+#   stub_called_times "uname" 3 # Returns 1 (error).
 #
 # Echoes number of times stub has been called if $2 is not given, otherwise
 # echoes nothing.
@@ -136,16 +160,18 @@ stub_called() {
 # number of times the stub has been called. Otherwise 1 (error) is returned if
 # it doesn't match..
 stub_called_times() {
+  local cmd="$1"
+  local expected="$2"
+
+  local index="$(__stub_index "$1")"
   local count=0
 
-  for called in ${STUB_CALLED_STUBS[@]}; do
-    if [ "$called" == "$1" ]; then
-      ((count++))
-    fi
-  done
+  if [ -n "$index" ]; then
+    eval "count=\"\${#STUB_${index}_CALLS[@]}\""
+  fi
 
-  if [ -n "$2" ]; then
-    if [ "$2" != "$count" ]; then
+  if [ -n "$expected" ]; then
+    if [ "$expected" != "$count" ]; then
       return 1
     fi
   else
@@ -154,7 +180,7 @@ stub_called_times() {
 }
 
 
-# Public: Find out of stub has been called at least the given number of times.
+# Public: Find out if stub has been called at least the given number of times.
 #
 # Arguments:
 #   - $1: Name of stubbed command.
@@ -170,18 +196,117 @@ stub_called_at_least_times() {
 }
 
 
-# Public: Find out of stub has been called no more than the given number of
+# Public: Find out if stub has been called no more than the given number of
 # times.
 #
 # Arguments:
 #   - $1: Name of stubbed command.
-#   - $2: Minimum required number of times stub has been called.
+#   - $2: Maximum allowed number of times stub has been called.
 #
 # Echoes nothing.
 # Returns 0 (success) if stub has been called no more than the given number of
 # times, otherwise 1 (error) is returned.
 stub_called_at_most_times() {
   if [ "$(stub_called_times "$1")" -gt "$2" ]; then
+    return 1
+  fi
+}
+
+
+# Public: Find out how many times a stub has been called with specific
+# arguments.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $@: All additional arguments are used to specify what stub was called
+#         with.
+#
+# Echoes number of times stub has been called with given arguments.
+# Return 0 (success).
+stub_called_with_times() {
+  local cmd="$1"
+
+  shift 1
+  local args="$@"
+  if [ "$args" == "" ]; then args="<none>"; fi
+
+  local count=0
+  local index="$(__stub_index "$cmd")"
+  if [ -n "$index" ]; then
+    eval "local calls=(\"\${STUB_${index}_CALLS[@]}\")"
+    for call in "${calls[@]}"; do
+      if [ "$call" == "$args" ]; then ((count++)); fi
+    done
+  fi
+
+  echo $count
+}
+
+
+# Public: Find out if stub has been called exactly the given number of times
+# with specified arguments.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $2: Minimum required number of times stub has been called.
+#   - $@: All additional arguments are used to specify what stub was called
+#         with.
+#
+# Echoes nothing.
+# Returns 0 (success) if stub has been called at least the given number of
+# times with specified arguments, otherwise 1 (error) is returned.
+stub_called_with_exactly_times() {
+  local cmd="$1"
+  local count="$2"
+  shift 2
+
+  if [ "$(stub_called_with_times "$cmd" $@)" != "$count" ]; then
+    return 1
+  fi
+}
+
+
+# Public: Find out if stub has been called at least the given number of times
+# with specified arguments.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $2: Minimum required number of times stub has been called.
+#   - $@: All additional arguments are used to specify what stub was called
+#         with.
+#
+# Echoes nothing.
+# Returns 0 (success) if stub has been called at least the given number of
+# times with specified arguments, otherwise 1 (error) is returned.
+stub_called_with_at_least_times() {
+  local cmd="$1"
+  local count="$2"
+  shift 2
+
+  if [ "$(stub_called_with_times "$cmd" $@)" -lt "$count" ]; then
+    return 1
+  fi
+}
+
+
+# Public: Find out if stub has been called no more than the given number of
+# times.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $2: Maximum allowed number of times stub has been called.
+#   - $@: All additional arguments are used to specify what stub was called
+#         with.
+#
+# Echoes nothing.
+# Returns 0 (success) if stub has been called no more than the given number of
+# times with specified arguments, otherwise 1 (error) is returned.
+stub_called_with_at_most_times() {
+  local cmd="$1"
+  local count="$2"
+  shift 2
+
+  if [ "$(stub_called_with_times "$cmd" $@)" -gt "$count" ]; then
     return 1
   fi
 }
@@ -228,5 +353,62 @@ restore() {
 # Private: Used to keep track of which stubs have been called and how many
 # times.
 __stub_call() {
-  STUB_CALLED_STUBS+=("$1")
+  local cmd="$1"
+  shift 1
+  local args="$@"
+  if [ "$args" == "" ]; then args="<none>"; fi
+
+  local index="$(__stub_index "$cmd")"
+  if [ -n "$index" ]; then
+    eval "STUB_${index}_CALLS+=(\"\$args\")"
+  fi
+}
+
+
+# Private: Get index value of stub. Required to access list of stub calls.
+__stub_index() {
+  local cmd="$1"
+
+  for item in ${STUB_INDEX[@]}; do
+    if [[ "$item" == "${cmd}="* ]]; then
+      local index="$item"
+      index="${index/${cmd}=/}"
+      echo "$index"
+    fi
+  done
+}
+
+
+# Private: Prepare for the creation of a new stub. Adds stub to index and
+# sets up an empty call list.
+__stub_register() {
+  local cmd="$1"
+
+  if [ -z "$STUB_NEXT_INDEX" ]; then STUB_NEXT_INDEX=0; fi
+  if [ -z "$STUB_INDEX" ]; then STUB_INDEX=(); fi
+
+  # Clean up after any previous stub for the same command.
+  __stub_clean "$cmd"
+
+  # Add stub to index.
+  STUB_INDEX+=("${cmd}=${STUB_NEXT_INDEX}")
+  eval "STUB_${STUB_NEXT_INDEX}_CALLS=()"
+
+  # Increment stub count.
+  ((STUB_NEXT_INDEX++))
+}
+
+# Private: Cleans out and removes a stub's call list, and removes stub from
+# index.
+__stub_clean() {
+  local cmd="$1"
+  local index="$(__stub_index "$cmd")"
+
+  # Remove all relevant details from any previously existing stub for the same
+  # command.
+  if [ -n "$index" ]; then
+    eval "unset STUB_${index}_CALLS"
+    STUB_INDEX=(${STUB_INDEX[@]/${cmd}=*/})
+  fi
+
 }
