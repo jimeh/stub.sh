@@ -5,7 +5,7 @@ source "test-helper.sh"
 # stub_called_at_least_times() tests.
 #
 
-# Setup
+# Setup.
 stub "uname"
 uname
 uname
@@ -24,7 +24,7 @@ assert_raises 'stub_called_at_least_times "uname" 5' 1
 assert_raises 'stub_called_at_least_times "top" 0' 0
 assert_raises 'stub_called_at_least_times "top" 1' 1
 
-# Teardown
+# Teardown.
 restore "uname"
 
 
