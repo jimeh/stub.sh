@@ -80,11 +80,13 @@ Asserting stub has been called with specific attributes:
 source "stub.sh"
 my-uname() { uname $@; }
 stub_and_echo uname "FooBar"
-stub_called_with uname -r    # returns 1 (error)
-my-uname -r -a               #=> FooBar
 stub_called_with uname -r -a # returns 1 (error)
 stub_called_with uname -r    # returns 1 (error)
+my-uname -r -a               #=> FooBar
+stub_called_with uname -r -a # returns 0 (success)
+stub_called_with uname -r    # returns 1 (error)
 my-uname -r                  #=> FooBar
+stub_called_with uname -r -a # returns 0 (success)
 stub_called_with uname -r    # returns 0 (success)
 restore uname
 ```
