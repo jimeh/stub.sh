@@ -136,26 +136,31 @@ restore uname
 - **`stub_called_with`**: Check if given stub has been called with specified
   arguments.
     - `$1`: Name of stub to check.
-    - `$@`: All additional arguments are used to specify what stub was with.
+    - `$@`: All additional arguments are used to specify what stub was called
+      with.
 - **`stub_called_with_times`**: Find out how many times a stub has been
   called with specified arguments.
     - `$1`: Name of stub to check.
-    - `$@`: All additional arguments are used to specify what stub was with.
+    - `$@`: All additional arguments are used to specify what stub was called
+      with.
 - **`stub_called_with_exactly_times`**: Validate that stub has been called
   with specified arguments exactly given number of times.
     - `$1`: Name of stub to check.
     - `$2`: Exact number of times stub should have been called.
-    - `$@`: All additional arguments are used to specify what stub was with.
+    - `$@`: All additional arguments are used to specify what stub was called
+      with.
 - **`stub_called_with_at_least_times`**: Validate that stub has been called
   with specified arguments at least X number of times.
     - `$1`: Name of stub to check.
     - `$2`: Minimum number of times stub should have been called.
-    - `$@`: All additional arguments are used to specify what stub was with.
+    - `$@`: All additional arguments are used to specify what stub was called
+      with.
 - **`stub_called_with_at_most_times`**: Validate that stub has been called
   with specified arguments no more than X number of times.
     - `$1`: Name of stub to check.
     - `$2`: Maximum number of times stub should have been called.
-    - `$@`: All additional arguments are used to specify what stub was with.
+    - `$@`: All additional arguments are used to specify what stub was called
+      with.
 
 
 ## Todo
