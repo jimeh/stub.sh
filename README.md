@@ -1,7 +1,8 @@
 # stub.sh [![Build Status](https://travis-ci.org/jimeh/stub.sh.png)](https://travis-ci.org/jimeh/stub.sh)
 
-A set of stubbing helpers for use in bash script tests. Supports stubbing and
-restoring both binaries and bash functions.
+Helpers for bash script testing to stub/fake binaries and functions. Includes
+support for validating number of stub calls, and/or if stub has been called
+with specific arguments.
 
 Particularly useful when used in combination with the simple and elegant
 [assert.sh](https://github.com/lehmannro/assert.sh) test framework.
@@ -50,9 +51,9 @@ Asserting stub has been called:
 source "stub.sh"
 my-uname() { uname; }
 stub_and_echo uname "FooBar"
-stub_called uname # return value of 1 (error)
+stub_called uname # returns 1 (error)
 my-uname          #=> FooBar
-stub_called uname # return value of 0 (success)
+stub_called uname # returns 0 (success)
 restore uname
 ```
 
@@ -63,58 +64,103 @@ source "stub.sh"
 my-uname() { uname; }
 stub_and_echo uname "FooBar"
 stub_called_times uname   #=> 0
-stub_called_times uname 2 # return value of 1 (error)
+stub_called_times uname 2 # returns 1 (error)
 my-uname                  #=> FooBar
 stub_called_times uname   #=> 1
-stub_called_times uname 2 # return value of 1 (error)
+stub_called_times uname 2 # returns 1 (error)
 my-uname                  #=> FooBar
 stub_called_times uname   #=> 2
-stub_called_times uname 2 # return value of 0 (success)
+stub_called_times uname 2 # returns 0 (success)
+restore uname
+```
+
+Asserting stub has been called with specific attributes:
+
+```bash
+source "stub.sh"
+my-uname() { uname $@; }
+stub_and_echo uname "FooBar"
+stub_called_with uname -r    # returns 1 (error)
+my-uname -r -a               #=> FooBar
+stub_called_with uname -r -a # returns 1 (error)
+stub_called_with uname -r    # returns 1 (error)
+my-uname -r                  #=> FooBar
+stub_called_with uname -r    # returns 0 (success)
 restore uname
 ```
 
 
 ## Function Reference
 
-- `stub`: Basic stubbing command. Will echo a default message to STDOUT.
+### Stubbing and Restoring
+
+- **`stub`**: Basic stubbing command. Will echo a default message to STDOUT.
   Arguments:
     - `$1`: Name of command to stub
     - `$2`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
-- `stub_and_echo`: Stub given command and echo a custom string to STDOUT.
+- **`stub_and_echo`**: Stub given command and echo a custom string to STDOUT.
   Arguments:
     - `$1`: Name of command to stub.
     - `$2`: String to echo when stub is called.
     - `$3`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
-- `stub_and_eval`: Stub given command and execute custom commands via eval.
+- **`stub_and_eval`**: Stub given command and execute custom commands via eval.
   Arguments:
     - `$1`: Name of command to stub.
     - `$2`: String to eval when stub is called.
-- `restore`: Restores use of original binary/function that was stubbed.
+- **`restore`**: Restores use of original binary/function that was stubbed.
   Arguments:
     - `$1`: Name of command to restore.
-- `stub_called`: Check if given stub has been called. Gives a `0` return value
-  when true, and `1` when false.
+
+### Stub Called Validation
+
+- **`stub_called`**: Check if given stub has been called. Gives a `0` return
+  value when true, and `1` when false.
     - `$1`: Name of stub to check.
-- `stub_called_times`: Find out how many times a stub has been called, or
-  given a second argument it validates if stub was called exactly X times.
+- **`stub_called_times`**: Find out how many times a stub has been called.
     - `$1`: Name of stub to check.
-    - `$2`: Exact number of times stub should have been called (optional).
-- `stub_called_at_least_times`: Validate that stub has been called at least X
-  number of times.
+- **`stub_called_exactly_times`**: Validate that stub has been called exactly
+  given number of times.
+    - `$1`: Name of stub to check.
+    - `$2`: Exact number of times stub should have been called.
+- **`stub_called_at_least_times`**: Validate that stub has been called at
+  least X number of times.
     - `$1`: Name of stub to check.
     - `$2`: Minimum number of times stub should have been called.
-- `stub_called_at_most_times`: Validate that stub has been called no more than
-  X number of times.
+- **`stub_called_at_most_times`**: Validate that stub has been called no more
+  than X number of times.
     - `$1`: Name of stub to check.
     - `$2`: Maximum number of times stub should have been called.
+
+### Stub Called With Validation
+
+- **`stub_called_with`**: Check if given stub has been called with specified
+  arguments.
+    - `$1`: Name of stub to check.
+    - `$@`: All additional arguments are used to specify what stub was with.
+- **`stub_called_with_times`**: Find out how many times a stub has been
+  called with specified arguments.
+    - `$1`: Name of stub to check.
+    - `$@`: All additional arguments are used to specify what stub was with.
+- **`stub_called_with_exactly_times`**: Validate that stub has been called
+  with specified arguments exactly given number of times.
+    - `$1`: Name of stub to check.
+    - `$2`: Exact number of times stub should have been called.
+    - `$@`: All additional arguments are used to specify what stub was with.
+- **`stub_called_with_at_least_times`**: Validate that stub has been called
+  with specified arguments at least X number of times.
+    - `$1`: Name of stub to check.
+    - `$2`: Minimum number of times stub should have been called.
+    - `$@`: All additional arguments are used to specify what stub was with.
+- **`stub_called_with_at_most_times`**: Validate that stub has been called
+  with specified arguments no more than X number of times.
+    - `$1`: Name of stub to check.
+    - `$2`: Maximum number of times stub should have been called.
+    - `$@`: All additional arguments are used to specify what stub was with.
 
 
 ## Todo
 
-- Add a `stub_called_with` function that validates the stub has been called
-  with specific arguments.
-- Add a `stub_called_with_times` function that validates the stub has been
-  called with specific arguments a specific number of times.
+- Better ReadMe/Documentation.
 
 
 ## License
