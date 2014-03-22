@@ -89,6 +89,24 @@ stub_called_with uname -r    # returns 0 (success)
 restore uname
 ```
 
+Asserting stub has been called X number of times with specific attributes:
+
+```bash
+source "stub.sh"
+my-uname() { uname $@; }
+stub_and_echo uname "FooBar"
+stub_called_with_times uname -r           #=> 0
+stub_called_with_exactly_times uname 2 -r # returns 1 (error)
+my-uname -r                               #=> FooBar
+stub_called_with_times uname -r           #=> 1
+stub_called_with_exactly_times uname 2 -r # returns 1 (error)
+my-uname -r                               #=> FooBar
+stub_called_with_times uname -r           #=> 2
+stub_called_with_exactly_times uname 2 -r # returns 0 (success)
+stub_called_with_times uname -r -a        #=> 0
+restore uname
+```
+
 
 ## Function Reference
 
