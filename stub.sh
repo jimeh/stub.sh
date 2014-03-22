@@ -26,12 +26,12 @@
 #
 
 
-# Public: Stub given command, echoing a default stub message.
+# Public: Stub given command.
 #
 # Arguments:
 #   - $1: Name of command to stub.
-#   - $2: When set to "STDERR", echo to STDERR instead of STDOUT.
-#         When set to "null", all output is redirected to /dev/null.
+#   - $2: (optional) When set to "STDOUT", echo a default message to STDOUT.
+#         When set to "STDERR", echo default message to STDERR.
 #
 # Echoes nothing.
 # Returns nothing.
@@ -49,7 +49,7 @@ stub() {
 # Arguments:
 #   - $1: Name of command to stub.
 #   - $2: String to echo when stub is called.
-#   - $3: When set to "STDERR", echo to STDERR instead of STDOUT.
+#   - $3: (optional) When set to "STDERR", echo to STDERR instead of STDOUT.
 #         When set to "null", all output is redirected to /dev/null.
 #
 # Echoes nothing.
@@ -120,11 +120,11 @@ stub_called() {
 #
 # Arguments:
 #   - $1: Name of stubbed command.
-#   - $@: All additional arguments are used to specify what stub was called
-#         with.
+#   - $@: Any/all additional arguments are used to specify what stub was
+#         called with.
 #
 # Examples:
-#   stub "uname"
+#   stub uname
 #   uname
 #   uname -r -a
 #   stub_called_with uname       # Returns 0 (success).
@@ -148,13 +148,6 @@ stub_called_with() {
 #
 # Arguments:
 #   - $1: Name of stubbed command.
-#   - $2: When specified, will check if stub was called exactly the given
-#         number of times (optional).
-#
-# Examples:
-#   stub_called_times "uname"   # Echoes "2" if stub has been called twice.
-#   stub_called_times "uname" 2 # Returns 0 (success).
-#   stub_called_times "uname" 3 # Returns 1 (error).
 #
 # Echoes number of times stub has been called if $2 is not given, otherwise
 # echoes nothing.
@@ -230,8 +223,8 @@ stub_called_at_most_times() {
 #
 # Arguments:
 #   - $1: Name of stubbed command.
-#   - $@: All additional arguments are used to specify what stub was called
-#         with.
+#   - $@: Any/all additional arguments are used to specify what stub was
+#         called with.
 #
 # Echoes number of times stub has been called with given arguments.
 # Return 0 (success).
@@ -261,8 +254,8 @@ stub_called_with_times() {
 # Arguments:
 #   - $1: Name of stubbed command.
 #   - $2: Exact number of times stub has been called.
-#   - $@: All additional arguments are used to specify what stub was called
-#         with.
+#   - $@: Any/all additional arguments are used to specify what stub was
+#         called with.
 #
 # Echoes nothing.
 # Returns 0 (success) if stub has been called at least the given number of
@@ -284,8 +277,8 @@ stub_called_with_exactly_times() {
 # Arguments:
 #   - $1: Name of stubbed command.
 #   - $2: Minimum required number of times stub has been called.
-#   - $@: All additional arguments are used to specify what stub was called
-#         with.
+#   - $@: Any/all additional arguments are used to specify what stub was
+#         called with.
 #
 # Echoes nothing.
 # Returns 0 (success) if stub has been called at least the given number of
@@ -307,8 +300,8 @@ stub_called_with_at_least_times() {
 # Arguments:
 #   - $1: Name of stubbed command.
 #   - $2: Maximum allowed number of times stub has been called.
-#   - $@: All additional arguments are used to specify what stub was called
-#         with.
+#   - $@: Any/all additional arguments are used to specify what stub was
+#         called with.
 #
 # Echoes nothing.
 # Returns 0 (success) if stub has been called no more than the given number of
