@@ -12,7 +12,7 @@ uname -r
 uname -r
 uname -r -a
 
-# Returns 0 when stub called exactly given number of times
+# Returns 0 when stub called exactly given number of times.
 assert_raises 'stub_called_with_exactly_times "uname" 2 -r' 0
 
 # Returns 1 when stub has not been called the exact given number of times.

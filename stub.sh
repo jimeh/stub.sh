@@ -161,7 +161,6 @@ stub_called_with() {
 # it doesn't match..
 stub_called_times() {
   local cmd="$1"
-  local expected="$2"
 
   local index="$(__stub_index "$1")"
   local count=0
@@ -170,12 +169,23 @@ stub_called_times() {
     eval "count=\"\${#STUB_${index}_CALLS[@]}\""
   fi
 
-  if [ -n "$expected" ]; then
-    if [ "$expected" != "$count" ]; then
-      return 1
-    fi
-  else
-    echo $count
+  echo $count
+}
+
+
+# Public: Find out if stub has been called exactly the given number of times
+# with specified arguments.
+#
+# Arguments:
+#   - $1: Name of stubbed command.
+#   - $2: Exact number of times stub has been called.
+#
+# Echoes nothing.
+# Returns 0 (success) if stub has been called at least the given number of
+# times with specified arguments, otherwise 1 (error) is returned.
+stub_called_exactly_times() {
+  if [ "$(stub_called_times "$1")" != "$2" ]; then
+    return 1
   fi
 }
 
@@ -248,7 +258,7 @@ stub_called_with_times() {
 #
 # Arguments:
 #   - $1: Name of stubbed command.
-#   - $2: Minimum required number of times stub has been called.
+#   - $2: Exact number of times stub has been called.
 #   - $@: All additional arguments are used to specify what stub was called
 #         with.
 #

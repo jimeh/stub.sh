@@ -29,14 +29,6 @@ stub "uname"
 assert 'stub_called_times "uname"' "0"
 restore "uname"
 
-# When given a second argument, asserts stub called X number of times.
-stub "uname"
-uname
-assert_raises 'stub_called_times "uname" 1' 0
-assert 'stub_called_times "uname" 1' ""
-assert_raises 'stub_called_times "uname" 3' 1
-assert 'stub_called_times "uname" 3' ""
-restore "uname"
 
 # End of tests.
 assert_end "stub_called_times()"
