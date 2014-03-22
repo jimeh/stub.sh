@@ -115,22 +115,18 @@ restore uname
 ### Stubbing and Restoring
 
 - **`stub`**: Basic stubbing command.
-  Arguments:
     - `$1`: Name of command to stub
     - `$2`: When set to "STDERR" or "STDOUT", will echo a default message to
       specified output. If no output is specified, nothing is echoed
       (optional).
 - **`stub_and_echo`**: Stub given command and echo a custom string to STDOUT.
-  Arguments:
     - `$1`: Name of command to stub.
     - `$2`: String to echo when stub is called.
     - `$3`: When set to "STDERR", echo to STDERR instead of STDOUT (optional).
 - **`stub_and_eval`**: Stub given command and execute custom commands via eval.
-  Arguments:
     - `$1`: Name of command to stub.
     - `$2`: String to eval when stub is called.
 - **`restore`**: Restores use of original binary/function that was stubbed.
-  Arguments:
     - `$1`: Name of command to restore.
 
 ### Stub Called Validation
