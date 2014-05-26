@@ -1,4 +1,5 @@
 # !/usr/bin/env bash
+#
 # stub.sh 1.0.1 - stubbing helpers for simplifying bash script tests.
 # https://github.com/jimeh/stub.sh
 #
