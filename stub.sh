@@ -99,7 +99,7 @@ stub_and_eval() {
   fi
 
   # Create the stub.
-  eval "$(echo -e "${cmd}() {\n  __stub_call \"${cmd}\" \$@\n  $2\n}")"
+  eval "$( printf "%s" "${cmd}() {  __stub_call \"${cmd}\" \$@;  $2;}")"
 }
 
 
