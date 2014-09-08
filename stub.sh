@@ -416,5 +416,4 @@ __stub_clean() {
     eval "unset STUB_${index}_CALLS"
     STUB_INDEX=(${STUB_INDEX[@]/${cmd}=*/})
   fi
-
 }
