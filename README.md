@@ -1,4 +1,4 @@
-# stub.sh [![Build Status](https://travis-ci.org/jimeh/stub.sh.png)](https://travis-ci.org/jimeh/stub.sh)
+# stub.sh [![Build Status](https://api.travis-ci.org/jimeh/stub.sh.svg)](https://travis-ci.org/jimeh/stub.sh)
 
 Helpers for bash script testing to stub/fake binaries and functions. Includes
 support for validating number of stub calls, and/or if stub has been called
