@@ -38,8 +38,8 @@
 # Returns nothing.
 stub() {
   local redirect="null"
-  if [ "$2" == "stdout" ] || [ "$2" == "STDOUT" ]; then redirect=""; fi
-  if [ "$2" == "stderr" ] || [ "$2" == "STDERR" ]; then redirect="stderr"; fi
+  if [ "$2" = "stdout" ] || [ "$2" = "STDOUT" ]; then redirect=""; fi
+  if [ "$2" = "stderr" ] || [ "$2" = "STDERR" ]; then redirect="stderr"; fi
 
   stub_and_echo "$1" "$1 stub: \$@" "$redirect"
 }
@@ -57,8 +57,8 @@ stub() {
 # Returns nothing.
 stub_and_echo() {
   local redirect=""
-  if [ "$3" == "stderr" ] || [ "$3" == "STDERR" ]; then redirect=" 1>&2"; fi
-  if [ "$3" == "null" ]; then redirect=" &>/dev/null"; fi
+  if [ "$3" = "stderr" ] || [ "$3" = "STDERR" ]; then redirect=" 1>&2"; fi
+  if [ "$3" = "null" ]; then redirect=" &>/dev/null"; fi
 
   stub_and_eval "$1" "echo \"$2\"$redirect"
 }
@@ -234,14 +234,14 @@ stub_called_with_times() {
 
   shift 1
   local args="$@"
-  if [ "$args" == "" ]; then args="<none>"; fi
+  if [ "$args" = "" ]; then args="<none>"; fi
 
   local count=0
   local index="$(__stub_index "$cmd")"
   if [ -n "$index" ]; then
     eval "local calls=(\"\${STUB_${index}_CALLS[@]}\")"
     for call in "${calls[@]}"; do
-      if [ "$call" == "$args" ]; then ((count++)); fi
+      if [ "$call" = "$args" ]; then ((count++)); fi
     done
   fi
 
@@ -362,7 +362,7 @@ __stub_call() {
   local cmd="$1"
   shift 1
   local args="$@"
-  if [ "$args" == "" ]; then args="<none>"; fi
+  if [ "$args" = "" ]; then args="<none>"; fi
 
   local index="$(__stub_index "$cmd")"
   if [ -n "$index" ]; then
@@ -376,7 +376,7 @@ __stub_index() {
   local cmd="$1"
 
   for item in ${STUB_INDEX[@]}; do
-    if [[ "$item" == "${cmd}="* ]]; then
+    if [[ "$item" = "${cmd}="* ]]; then
       local index="$item"
       index="${index/${cmd}=/}"
       echo "$index"
