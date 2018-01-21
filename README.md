@@ -7,6 +7,34 @@ with specific arguments.
 Particularly useful when used in combination with the simple and elegant
 [assert.sh](https://github.com/lehmannro/assert.sh) test framework.
 
+## Installation
+
+The `stub.sh` script can be installed in several ways:
+
+- Downloading the "raw" `stub.sh` file from Github
+- Using `bpkg`
+
+### Downloading the `stub.sh` file
+
+```sh
+curl -LO 'https://github.com/jimeh/stub.sh/raw/master/stub.sh'
+```
+
+(Or manually open https://github.com/jimeh/stub.sh/raw/master/stub.sh in a webbrowser).
+
+### Using bpkg
+
+[BPKG](http://www.bpkg.io/) is a lightweight package manager for bash.
+
+`stub.sh` is available as [bpkg](http://www.bpkg.io/) package:
+
+```sh
+bpkg install jimeh/stub.sh
+```
+
+This will install `stub.sh` at `./deps/stub.sh/stub.sh` in the directory that `bpkg` has been run in.
+
+To install globally run: `bpkg install -g jimeh/stub.sh`
 
 ## Usage
 
@@ -25,7 +53,7 @@ uname             #=> Darwin
 stub uname        # silent stub
 uname             #=>
 stub uname STDOUT # stub prints to STDOUT
-uname             #=> uname stub: 
+uname             #=> uname stub:
 uname -r          #=> uname stub: -r
 restore uname     # remove stub
 uname             #=> Darwin
@@ -38,7 +66,7 @@ source "stub.sh"
 my-name-is() { echo "My name is $@."; }
 my-name-is Edward Elric #=> My name is Edward Elric.
 stub my-name-is         # silent stub
-my-name-is Edward Elric #=> 
+my-name-is Edward Elric #=>
 stub my-name-is STDOUT  # stub prints to STDOUT
 my-name-is Edward Elric #=> my-name-is stub: Edward Elric
 restore my-name-is      # remove stub
