@@ -1,0 +1,9 @@
+{
+    "name": "stub.sh",
+    "description": "Utilities to mock/fake/stub binaries and functions for testing with BASH.",
+    "author": "Jim Myhrberg <contact@jimeh.me>",
+    "license": "MIT",
+    "homepage": "https://github.com/jimeh/stub.sh",
+    "scripts": [],
+    "files": ["README.md", "stub.sh"]
+}
