@@ -5,7 +5,6 @@ source "test-helper.sh"
 # restore() tests.
 #
 
-
 # Stubbing and restoring a bash function.
 my-name-is() { echo "My name is $@."; }
 assert "my-name-is Edward Elric" "My name is Edward Elric."

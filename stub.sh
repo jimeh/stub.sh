@@ -26,6 +26,28 @@
 # IN THE SOFTWARE.
 #
 
+# Global variables
+MAIN_SPID=$BASHPID
+STUB_FIFO=/tmp/stub_fifo
+
+# fifo initialization
+[ ! -p $STUB_FIFO ] && mkfifo $STUB_FIFO
+
+# trap setup
+trap __read_fifo USR1
+trap __fifo_clean_up EXIT
+
+
+# Private: Reads the fifo when the USR1 signal is received
+__read_fifo() {
+  read EXEC < "$STUB_FIFO"
+  __stub_call_main $EXEC
+}
+
+# Private: Clean up fifo resources created at startup
+__fifo_clean_up() {
+  rm $STUB_FIFO
+}
 
 # Public: Stub given command.
 #
@@ -376,14 +398,24 @@ restore() {
 # Private: Used to keep track of which stubs have been called and how many
 # times.
 __stub_call() {
+  # Send call to the main process
+  printf "%q" "$*" > $STUB_FIFO &
+  kill -USR1 $MAIN_SPID
+}
+
+# Private: Used to update the tracking of which stubs have been called
+# in the main process.
+__stub_call_main() {
   local cmd="$1"
   shift 1
-  local args="$@"
-  if [ "$args" = "" ]; then args="<none>"; fi
+  local args="'<none>'"
+  if [ "$#" != "0" ];then
+    args=$(printf "%q" "$*")
+  fi
 
   local index="$(__stub_index "$cmd")"
   if [ -n "$index" ]; then
-    eval "STUB_${index}_CALLS+=(\"\$args\")"
+    eval "STUB_${index}_CALLS+=($args)"
   fi
 }
 
