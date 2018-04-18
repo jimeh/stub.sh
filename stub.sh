@@ -63,6 +63,23 @@ stub_and_echo() {
   stub_and_eval "$1" "echo \"$2\"$redirect"
 }
 
+# Public: Stub given command, and printf given string.
+#
+# Arguments:
+#   - $1: Name of command to stub.
+#   - $2: String to printf when stub is called.
+#   - $3: (optional) When set to "STDERR", echo to STDERR instead of STDOUT.
+#         When set to "null", all output is redirected to /dev/null.
+#
+# Echoes nothing.
+# Returns nothing.
+stub_and_printf() {
+  local redirect=""
+  if [ "$3" = "stderr" ] || [ "$3" = "STDERR" ]; then redirect=" 1>&2"; fi
+  if [ "$3" = "null" ]; then redirect=" &>/dev/null"; fi
+
+  stub_and_eval "$1" "printf \"$2\"$redirect"
+}
 
 # Public: Stub given command, and execute given string with eval.
 #
