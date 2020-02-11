@@ -6,7 +6,7 @@ source "test-helper.sh"
 #
 
 # Sets up stub index, stub call list, and adds stub to index.
-__stub_register "uname"
+__stub_register "uname" || assert_raises "false"
 __stub_register "top"
 assert 'echo ${STUB_INDEX[@]}' 'uname=0 top=1'
 assert 'echo ${STUB_INDEX[0]}' 'uname=0'

@@ -401,7 +401,7 @@ __stub_register() {
   eval "STUB_${STUB_NEXT_INDEX}_CALLS=()"
 
   # Increment stub count.
-  ((STUB_NEXT_INDEX++))
+  ((++STUB_NEXT_INDEX))
 }
 
 # Private: Cleans out and removes a stub's call list, and removes stub from
