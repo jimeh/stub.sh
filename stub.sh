@@ -284,9 +284,29 @@ stub_called_with_times() {
     done
   fi
 
+  if [ $count -eq 0 ]; then
+    assertionError "$args" "${calls[@]}"
+  fi
+
   echo $count
 }
 
+function assertionError() {
+  local expected=$1
+  shift 1
+  local calls=("$@")
+  local actual=""
+
+  for call in "${calls[@]}"; do
+    actual+="$call\n\t"
+  done
+
+  echo -e "\e[1m\e[31mAssertion Error\e[0m
+      \e[31mExpected:\e[0m
+        $expected
+      \e[32mActual:\e[0m
+        $actual" 1>&2;
+}
 
 # Public: Find out if stub has been called exactly the given number of times
 # with specified arguments.
